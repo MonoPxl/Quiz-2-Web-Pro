@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="ui" tagdir="/WEB-INF/tags" %>
-<jsp:include page="partials/head.jsp"/>
+<jsp:include page="/WEB-INF/views/partials/head.jsp"/>
 
 <section class="shell detail-section">
     <a class="back-link" href="${ctx}/">
@@ -358,4 +358,4 @@
     </section>
 </section>
 
-<jsp:include page="partials/foot.jsp"/>
+<jsp:include page="/WEB-INF/views/partials/foot.jsp"/>

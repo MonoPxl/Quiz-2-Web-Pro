@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -27,6 +28,7 @@ class JspAuditTest {
     private static final Path TAGS = Path.of("src/main/webapp/WEB-INF/tags");
 
     private static final Pattern SCRIPTLET = Pattern.compile("<%(?!@|--)");
+    private static final Pattern JSP_INCLUDE = Pattern.compile("<jsp:include\\s+page=\"([^\"]+)\"");
     private static final Pattern SQL = Pattern.compile(
             "(?i)\\b(select\\s+[^<]{0,200}\\s+from|insert\\s+into|update\\s+\\w+\\s+set|delete\\s+from)\\b");
 
@@ -37,6 +39,26 @@ class JspAuditTest {
 
             assertFalse(SCRIPTLET.matcher(source).find(),
                     "scriptlet or expression found in " + file);
+        }
+    }
+
+    @Test
+    void jspIncludesResolveToExistingResources() throws IOException {
+        Path webRoot = Path.of("src/main/webapp");
+
+        for (Path file : jspFiles()) {
+            String source = Files.readString(file, StandardCharsets.UTF_8);
+            Matcher includes = JSP_INCLUDE.matcher(source);
+
+            while (includes.find()) {
+                String include = includes.group(1);
+                Path target = include.startsWith("/")
+                        ? webRoot.resolve(include.substring(1))
+                        : file.getParent().resolve(include);
+
+                assertTrue(Files.isRegularFile(target.normalize()),
+                        "JSP include does not resolve: " + include + " from " + file);
+            }
         }
     }
 

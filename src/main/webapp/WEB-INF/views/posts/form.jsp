@@ -1,7 +1,7 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="ui" tagdir="/WEB-INF/tags" %>
-<jsp:include page="partials/head.jsp"/>
+<jsp:include page="/WEB-INF/views/partials/head.jsp"/>
 
 <section class="shell compose-section">
     <c:choose>
@@ -219,4 +219,4 @@
     </form>
 </section>
 
-<jsp:include page="partials/foot.jsp"/>
+<jsp:include page="/WEB-INF/views/partials/foot.jsp"/>
