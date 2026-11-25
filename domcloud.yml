@@ -1,0 +1,68 @@
+# ===========================================================================
+# myITS Broadcast — sample DOMCloud deployment script
+# ---------------------------------------------------------------------------
+# This file is a reference for DOMCloud's Setup -> Deploy tab. DOMCloud runs
+# the YAML there; it does not read this file automatically. Do not commit real
+# secrets. Replace the source URL before using it.
+#
+# What it does:
+#   - installs Java 17 and PostgreSQL,
+#   - clones the repository into ~/public_html,
+#   - downloads Maven and builds target/myitsbroadcast.war,
+#   - writes a server-side .env.jsp from DOMCloud's database environment variables,
+#   - lets Passenger start Tomcat through scripts/domcloud-start.sh.
+#
+# The database schema is NOT applied automatically. Run the idempotent
+# schema.sql once over SSH after the first deploy (see docs/REPORT.md).
+# ===========================================================================
+source: https://github.com/REPLACE_WITH_GITHUB_USER/myitsbroadcast
+
+features:
+  - java 17
+  - postgresql
+
+nginx:
+  # Keep NGINX away from the repository source. Requests that do not match a
+  # file under static/ are forwarded by Passenger to Tomcat.
+  root: public_html/static
+  passenger:
+    enabled: "on"
+    app_start_command: bash scripts/domcloud-start.sh
+    app_env: production
+
+commands:
+  - mkdir -p static
+  - chmod +x scripts/domcloud-start.sh scripts/run-local.sh
+
+  # Maven is not installed by the java feature; install it in the account.
+  - |
+    if [ ! -x "$HOME/apache-maven-3.9.9/bin/mvn" ]; then
+      curl -fsSL https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz \
+        | tar -xz -C "$HOME"
+    fi
+
+  - |
+    "$HOME/apache-maven-3.9.9/bin/mvn" -q -DskipTests package
+
+  # DOMCloud supplies $DATABASE, $USERNAME and $PGPASSWD to deployment
+  # commands. The application only reads environment variables, so the start
+  # script sources this file. Never commit it. The name is distinct from the
+  # legacy Laravel .env so the two runtimes cannot read each other's settings.
+  - |
+    cat > .env.jsp <<EOF
+    APP_ENV=production
+    APP_BASE_URL=https://$DOMAIN
+    APP_STORAGE_DIR=$HOME/myitsbroadcast-storage
+    DB_URL=jdbc:postgresql://localhost:5432/$DATABASE
+    DB_USER=$USERNAME
+    DB_PASSWORD=$PGPASSWD
+    DB_POOL_SIZE=5
+    LOGIN_MAX_ATTEMPTS=5
+    LOGIN_WINDOW_SECONDS=60
+    EOF
+    chmod 600 .env.jsp
+
+  # Optional one-time schema initialization. Uncomment only after reviewing
+  # schema.sql. It is idempotent and never drops data.
+  # - PGPASSWORD="$PGPASSWD" psql -h localhost -U "$USERNAME" -d "$DATABASE" -f src/main/resources/db/schema.sql
+  # - PGPASSWORD="$PGPASSWD" psql -h localhost -U "$USERNAME" -d "$DATABASE" -f src/main/resources/db/seed.sql

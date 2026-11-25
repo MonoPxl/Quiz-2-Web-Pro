@@ -1,5 +1,13 @@
 /.phpunit.cache
 /node_modules
+# JSP / Maven build output
+/target
+*.war
+# JSP application configuration (see .env.jsp.example). The Laravel app keeps
+# its own .env; the two must not share a file.
+/.env.jsp
+# Local storage for uploaded avatars and covers (never commit uploads)
+/storage-jsp
 /public/build
 /public/fonts-manifest.dev.json
 /public/hot
