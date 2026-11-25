@@ -282,7 +282,7 @@
                                                     </details>
                                                 </c:if>
 
-                                                <c:if test="${comment.userId == currentUser.id}">
+                                                <c:if test="${not empty currentUser and comment.userId == currentUser.id}">
                                                     <a class="comment-action" href="${ctx}/posts/${post.slug}?edit=${comment.id}#comment-${comment.id}"
                                                        data-edit-comment="${comment.id}">Edit</a>
 
@@ -330,7 +330,7 @@
                                                             <p class="comment-body"><c:out value="${reply.body}"/></p>
 
                                                             <div class="comment-actions">
-                                                                <c:if test="${reply.userId == currentUser.id}">
+                                                                <c:if test="${not empty currentUser and reply.userId == currentUser.id}">
                                                                     <a class="comment-action" href="${ctx}/posts/${post.slug}?edit=${reply.id}#comment-${reply.id}"
                                                                        data-edit-comment="${reply.id}">Edit</a>
 
