@@ -219,7 +219,6 @@ application has been verified against a real database.
 
 | Document | Contents |
 |---|---|
-| [`docs/REPORT.md`](docs/REPORT.md) | Full quiz report: overview, models, features, CRUD matrix, screenshots, architecture, DOMCloud, contributions |
 | [`docs/AUDIT.md`](docs/AUDIT.md) | Requirement-by-requirement IMPLEMENTED / PARTIAL / NOT IMPLEMENTED audit |
 | [`docs/MIGRATION_MAP.md`](docs/MIGRATION_MAP.md) | Laravel route/field/rule mapping and import notes |
 | [`docs/erd-conceptual.md`](docs/erd-conceptual.md) | Conceptual ERD and relationships |
@@ -242,8 +241,7 @@ documented, reviewable path:
 
 DOMCloud does not preinstall Tomcat just because Java is enabled; the start script
 downloads Tomcat 10.1.34 into `~/.local`. Plan eligibility for the free tier and the
-`java`/`postgresql` features was **not** verified against the user's account. See
-[`docs/REPORT.md`](docs/REPORT.md#8-domcloud-readiness) for the full checklist and caveats.
+`java`/`postgresql` features was **not** verified against the user's account.
 
 ---
 
@@ -272,10 +270,6 @@ contributions must be confirmed by the group; they are not invented here.
 | Marvel Timothy N. | 5025251209 | Backend, database design, authentication |
 | Joel Angga Fransmartua Manalu | 5025251212 | Features, testing, final report |
 | Syabil Zihni | 5025251217 | Frontend, UI/UX, project documentation |
-
-See [`docs/REPORT.md`](docs/REPORT.md#10-group-contributions) for the contribution table
-with placeholders.
-
 ---
 
 ## Legacy Laravel application
