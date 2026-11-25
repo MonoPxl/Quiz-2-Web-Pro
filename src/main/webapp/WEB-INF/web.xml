@@ -9,6 +9,16 @@
     <request-character-encoding>UTF-8</request-character-encoding>
     <response-character-encoding>UTF-8</response-character-encoding>
 
+    <!-- Log uncaught request exceptions before the generic 500 page handles them. -->
+    <filter>
+        <filter-name>exception-logger</filter-name>
+        <filter-class>id.myitsbroadcast.filter.ExceptionLoggingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>exception-logger</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- Filter order matters: encoding, then CSRF, then authentication. -->
     <filter>
         <filter-name>encoding</filter-name>
