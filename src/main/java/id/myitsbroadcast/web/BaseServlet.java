@@ -61,7 +61,13 @@ public abstract class BaseServlet extends HttpServlet {
     }
 
     protected static User currentUser(HttpServletRequest request) {
-        return (User) request.getAttribute("currentUser");
+        // Resolve the user from the same session/cache used by AuthFilter.
+        // Do not rely on the JSP-facing "currentUser" request attribute here:
+        // prepare() sets that attribute only when render() is called, but many
+        // servlets need the current user before rendering (e.g. dashboard data).
+        User user = Auth.user(request);
+        request.setAttribute("currentUser", user);
+        return user;
     }
 
     protected static String param(HttpServletRequest request, String name) {
